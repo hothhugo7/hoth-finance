@@ -6,6 +6,8 @@ App desktop feito para o dia a dia do financeiro de um supermercado. Ele importa
 lançamento no plano de contas, confere as contas a pagar com os pagamentos e mantém a planilha de fechamento
 (DFC + DRE) e o fluxo de caixa sempre atualizados, sem digitação manual.
 
+**[▶ Ver a apresentação e testar no navegador](https://hothhugo7.github.io/hoth-finance/)**
+
 > Os nomes de empresa, fornecedores, pessoas e caminhos de rede deste repositório são fictícios.
 
 ![Painel](docs/prints/painel.png)

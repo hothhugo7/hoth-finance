@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hoth Finance — Fechamento financeiro inteligente</title>
+<meta name="description" content="Importa extratos, classifica sozinho, concilia contas a pagar e entrega DFC, DRE e fluxo de caixa. Por Hoth Solutions.">
+<link rel="icon" href="site/hoth.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site/base.css">
+<link rel="stylesheet" href="site/landing.css">
+</head>
+<body>
+<div class="progresso" id="progresso"></div>
+<div class="cursor-luz" id="cursorLuz"></div>
+
+<header class="nav" id="nav">
+  <a href="#topo" class="nav-logo"><img src="site/logo_hoth_horizontal.png" alt="Hoth Solutions"></a>
+  <nav class="nav-links">
+    <a href="#como">Como funciona</a>
+    <a href="#recursos">Recursos</a>
+    <a href="#conciliacao">Conciliação</a>
+    <a href="#tecnologia">Tecnologia</a>
+  </nav>
+  <a href="demo.html" class="botao primario pequeno">Testar aplicativo</a>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="topo">
+  <canvas id="rede"></canvas>
+  <div class="hero-brilho"></div>
+  <div class="hero-texto">
+    <span class="selo revelar"><span class="ponto-vivo"></span> Em produção num supermercado real</span>
+    <h1 class="revelar">O fechamento financeiro<br>que <span class="prata" id="rotativo">se faz sozinho</span><span class="caret">|</span></h1>
+    <p class="revelar">Arraste o extrato. O Hoth Finance classifica cada lançamento, confere cada boleto pago e entrega
+      DFC, DRE e fluxo de caixa prontos, com auditoria de tudo o que mudou.</p>
+    <div class="hero-acoes revelar">
+      <a href="demo.html" class="botao primario">Testar aplicativo agora <span class="seta">→</span></a>
+      <a href="#como" class="botao">Ver como funciona</a>
+    </div>
+  </div>
+  <div class="hero-visual revelar" id="heroVisual">
+    <div class="moldura" id="moldura">
+      <div class="moldura-barra"><i></i><i></i><i></i><span>Hoth Finance</span></div>
+      <img src="prints/painel.png" alt="Painel do Hoth Finance">
+      <div class="varredura"></div>
+    </div>
+    <div class="chip chip-a"><b class="cont" data-ate="1512">0</b><small>lançamentos importados</small></div>
+    <div class="chip chip-b"><span class="ok-bola">✓</span><div><b>Boleto conciliado</b><small>código + documento</small></div></div>
+    <div class="chip chip-c"><b class="cont" data-ate="94" data-suf="%">0</b><small>classificados sozinhos</small></div>
+  </div>
+  <a href="#numeros" class="rolar">role<span></span></a>
+</section>
+
+<!-- FAIXA -->
+<div class="faixa">
+  <div class="faixa-trilho">
+    <span>Santander .xlsx</span><span>Cora .ofx</span><span>Lotérica / RET .xls</span><span>Fatura do cartão .pdf</span>
+    <span>Caixa da loja</span><span>Comprovantes</span><span>Malote</span><span>Excel DFC + DRE</span>
+    <span>Santander .xlsx</span><span>Cora .ofx</span><span>Lotérica / RET .xls</span><span>Fatura do cartão .pdf</span>
+    <span>Caixa da loja</span><span>Comprovantes</span><span>Malote</span><span>Excel DFC + DRE</span>
+  </div>
+</div>
+
+<!-- NÚMEROS -->
+<section class="numeros" id="numeros">
+  <div class="numero revelar"><b class="cont" data-ate="7">0</b><span>formatos de extrato lidos sem digitação</span></div>
+  <div class="numero revelar"><b class="cont" data-ate="250" data-pre="+">0</b><span>regras aprendidas com o uso real</span></div>
+  <div class="numero revelar"><b class="cont" data-ate="7">0</b><span>provas de pagamento em cascata</span></div>
+  <div class="numero revelar"><b class="cont" data-ate="100" data-suf="%">0</b><span>das gravações com backup e auditoria</span></div>
+</section>
+
+<!-- COMO FUNCIONA (scroll fixo) -->
+<section class="como" id="como">
+  <div class="secao-titulo revelar">
+    <span class="rotulo">Como funciona</span>
+    <h2>Do extrato bruto ao <span class="prata">resultado do mês</span></h2>
+  </div>
+  <div class="como-grade">
+    <div class="como-palco">
+      <div class="palco" id="palco">
+        <div class="cena ativa" data-cena="0">
+          <div class="drop"><div class="drop-icone">⇪</div><b>extrato_santander_outubro.xlsx</b><small>arraste aqui</small>
+            <div class="drop-barra"><i></i></div></div>
+        </div>
+        <div class="cena" data-cena="1">
+          <div class="linhas-demo" id="linhasDemo"></div>
+        </div>
+        <div class="cena" data-cena="2">
+          <div class="casamento">
+            <div class="cx"><small>Título</small><b>00104 · Frigorífico Vale Verde</b><span class="mono">R$ 5.131,40 · venc. 12/10</span></div>
+            <svg viewBox="0 0 100 40" class="elo"><path d="M0 20 C 40 0, 60 40, 100 20"/></svg>
+            <div class="cx"><small>Extrato</small><b>PAGTO BOLETO 00104</b><span class="mono">−5.131,40 · 12/10</span></div>
+            <div class="selo-ok">✓ Pago e conferido</div>
+          </div>
+        </div>
+        <div class="cena" data-cena="3">
+          <div class="grafico-demo" id="graficoDemo"></div>
+        </div>
+      </div>
+    </div>
+    <div class="como-passos">
+      <article class="passo" data-passo="0"><span class="n">01</span><h3>Importe</h3>
+        <p>Arraste o extrato de qualquer banco. O app reconhece o formato, ignora o que já foi importado e guarda
+          uma cópia do original.</p></article>
+      <article class="passo" data-passo="1"><span class="n">02</span><h3>Classifique</h3>
+        <p>Cada linha chega com a conta proposta e a confiança. Verde aplica, amarelo pede seu olhar. Corrigiu
+          uma? Ele aprende e aplica aos parecidos.</p></article>
+      <article class="passo" data-passo="2"><span class="n">03</span><h3>Concilie</h3>
+        <p>Cada boleto do contas a pagar é procurado em todos os bancos, no caixa, nos comprovantes e no malote, da
+          prova mais forte para a mais fraca.</p></article>
+      <article class="passo" data-passo="3"><span class="n">04</span><h3>Decida</h3>
+        <p>DFC, DRE e fluxo de caixa se refazem na hora. Você vê o mês fechado e os próximos 30 dias projetados.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- RECURSOS -->
+<section class="recursos" id="recursos">
+  <div class="secao-titulo revelar">
+    <span class="rotulo">Recursos</span>
+    <h2>Feito para o financeiro de verdade,<br><span class="prata">não para a demonstração</span></h2>
+  </div>
+  <div class="cards">
+    <article class="card revelar" data-tilt><div class="card-icone">⟲</div><h3>Classificação que aprende</h3>
+      <p>Regras fixas, histórico por fornecedor e similaridade de texto. Cada correção vira conhecimento.</p>
+      <div class="mini-barras"><i style="--h:30%"></i><i style="--h:55%"></i><i style="--h:72%"></i><i style="--h:88%"></i><i style="--h:94%"></i></div></article>
+    <article class="card revelar" data-tilt><div class="card-icone">⧉</div><h3>Conciliação em cascata</h3>
+      <p>Sete provas, da mais forte à mais fraca, para dizer se cada conta foi paga e onde.</p>
+      <div class="mini-tags"><span class="t-ok">Pago</span><span class="t-al">Provável</span><span class="t-er">Vencido</span></div></article>
+    <article class="card revelar" data-tilt><div class="card-icone">▤</div><h3>Fatura do cartão</h3>
+      <p>Abre o PDF protegido e troca o débito único pelas compras, cada uma na sua conta.</p></article>
+    <article class="card revelar" data-tilt><div class="card-icone">◷</div><h3>Fluxo de caixa vivo</h3>
+      <p>Pago na data do pagamento, em aberto no vencimento. A projeção se refaz a cada importação.</p>
+      <svg class="mini-linha" viewBox="0 0 200 50"><path d="M0 40 L30 32 L60 36 L90 20 L120 26 L150 12 L200 8"/></svg></article>
+    <article class="card revelar" data-tilt><div class="card-icone">⛨</div><h3>Nada se perde</h3>
+      <p>Toda gravação exige o arquivo fechado, faz backup e registra auditoria. Qualquer versão volta com um clique.</p></article>
+    <article class="card revelar" data-tilt><div class="card-icone">⌗</div><h3>Plano de contas editável</h3>
+      <p>Crie, mescle e reordene contas e grupos. DFC e DRE se reconstroem por fórmulas, sem quebrar.</p></article>
+  </div>
+</section>
+
+<!-- CONCILIAÇÃO -->
+<section class="conc" id="conciliacao">
+  <div class="secao-titulo revelar">
+    <span class="rotulo">Conciliação</span>
+    <h2>Sete provas. <span class="prata">Uma resposta clara.</span></h2>
+    <p class="sub">Passe o mouse para ver como cada prova decide.</p>
+  </div>
+  <div class="escada" id="escada">
+    <div class="degrau" data-forca="100"><b>1</b><div><h4>Marcas</h4><p>O lançamento já foi ligado ao título antes.</p></div><span class="forca"><i></i></span></div>
+    <div class="degrau" data-forca="95"><b>2</b><div><h4>Código + documento</h4><p>Código do fornecedor e número do boleto no extrato.</p></div><span class="forca"><i></i></span></div>
+    <div class="degrau" data-forca="85"><b>3</b><div><h4>Código + valor</h4><p>Mesmo fornecedor, mesmo valor, perto do vencimento.</p></div><span class="forca"><i></i></span></div>
+    <div class="degrau" data-forca="80"><b>4</b><div><h4>Comprovante</h4><p>PDF do comprovante bancário com o mesmo boleto.</p></div><span class="forca"><i></i></span></div>
+    <div class="degrau" data-forca="70"><b>5</b><div><h4>Malote</h4><p>Valor da fita do malote que voltou do banco.</p></div><span class="forca"><i></i></span></div>
+    <div class="degrau" data-forca="55"><b>6</b><div><h4>Nome do fornecedor</h4><p>Mesmo valor e o nome escrito no caixa da loja.</p></div><span class="forca"><i></i></span></div>
+    <div class="degrau" data-forca="35"><b>7</b><div><h4>Só valor</h4><p>Último recurso: sugere, mas pede confirmação.</p></div><span class="forca"><i></i></span></div>
+  </div>
+</section>
+
+<!-- ANTES E DEPOIS -->
+<section class="antes" id="antes">
+  <div class="secao-titulo revelar">
+    <span class="rotulo">Antes e depois</span>
+    <h2>Arraste e veja <span class="prata">a diferença</span></h2>
+  </div>
+  <div class="comparador revelar" id="comparador">
+    <div class="lado lado-antes">
+      <h4>Planilha manual</h4>
+      <ul><li>Copiar e colar extratos de 4 bancos</li><li>Classificar centenas de linhas uma a uma</li>
+        <li>Conferir boleto por boleto</li><li>DRE montada à mão no fim do mês</li><li>Fluxo de caixa desatualizado</li></ul>
+      <div class="tempo">≈ 3 dias / mês</div>
+    </div>
+    <div class="lado lado-depois">
+      <h4>Hoth Finance</h4>
+      <ul><li>Arrastar o arquivo</li><li>Revisar só os amarelos</li><li>Conciliação automática</li>
+        <li>DFC e DRE por fórmulas</li><li>Fluxo projetado a cada importação</li></ul>
+      <div class="tempo">≈ 20 min / dia</div>
+    </div>
+    <div class="alca" id="alca"><span>⇆</span></div>
+  </div>
+</section>
+
+<!-- GALERIA -->
+<section class="galeria">
+  <div class="secao-titulo revelar"><span class="rotulo">Telas reais</span><h2>O app <span class="prata">por dentro</span></h2></div>
+  <div class="trilho-galeria" id="galeria">
+    <figure data-tilt><img src="prints/pagar.png" alt="Contas a pagar"><figcaption>Contas a pagar conciliadas</figcaption></figure>
+    <figure data-tilt><img src="prints/fluxo.png" alt="Fluxo de caixa"><figcaption>Fluxo de caixa</figcaption></figure>
+    <figure data-tilt><img src="prints/importar.png" alt="Importar extrato"><figcaption>Importar extrato</figcaption></figure>
+    <figure data-tilt><img src="prints/config.png" alt="Categorias"><figcaption>Categorias por fornecedor</figcaption></figure>
+  </div>
+</section>
+
+<!-- TECNOLOGIA -->
+<section class="tec" id="tecnologia">
+  <div class="secao-titulo revelar"><span class="rotulo">Tecnologia</span><h2>Engenharia <span class="prata">por baixo do capô</span></h2></div>
+  <div class="arq revelar">
+    <div class="arq-no"><small>Interface</small><b>React 18 · TypeScript · Vite</b></div>
+    <div class="arq-fio"><i></i></div>
+    <div class="arq-no"><small>API local</small><b>FastAPI · Uvicorn</b></div>
+    <div class="arq-fio"><i></i></div>
+    <div class="arq-no destaque"><small>Núcleo</small><b>Leitores · Classificador · Conciliação · Fluxo</b></div>
+    <div class="arq-fio"><i></i></div>
+    <div class="arq-no"><small>Planilha</small><b>openpyxl · Excel COM · backup + auditoria</b></div>
+  </div>
+  <div class="pilhas">
+    <span>Python 3.12</span><span>FastAPI</span><span>React</span><span>TypeScript</span><span>pywebview</span>
+    <span>PyInstaller</span><span>openpyxl</span><span>pypdf</span><span>pytest · 44 testes</span>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="testar">
+  <div class="cta-anel"></div>
+  <h2 class="revelar">Veja funcionando<br><span class="prata">com as suas mãos.</span></h2>
+  <p class="revelar">Baixe um extrato fictício, importe, classifique e veja o resultado. Tudo no navegador, em dois minutos.</p>
+  <a href="demo.html" class="botao primario grande revelar">Testar aplicativo <span class="seta">→</span></a>
+</section>
+
+<footer class="rodape">
+  <img src="site/logo_hoth_horizontal.png" alt="Hoth Solutions">
+  <span>Hoth Finance · dados de demonstração fictícios</span>
+  <a href="https://github.com/hothhugo7/hoth-finance">Código no GitHub</a>
+</footer>
+
+<script src="site/landing.js"></script>
+</body>
+</html>

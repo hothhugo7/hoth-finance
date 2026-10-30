@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hoth Finance — Demonstração</title>
+<link rel="icon" href="site/hoth.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site/base.css">
+<link rel="stylesheet" href="site/demo.css">
+</head>
+<body>
+<div class="app">
+  <aside class="lateral">
+    <a href="index.html" class="logo"><img src="site/logo_hoth_horizontal.png" alt="Hoth Solutions"></a>
+    <nav id="menu">
+      <button data-tela="inicio" class="ativo"><span>◱</span>Início</button>
+      <button data-tela="importar"><span>⇪</span>Importar extrato</button>
+      <button data-tela="classificar" disabled><span>⟲</span>Classificar</button>
+      <button data-tela="pagar" disabled><span>⧉</span>Contas a Pagar</button>
+      <button data-tela="resultado" disabled><span>◷</span>Resultado</button>
+    </nav>
+    <div class="empresa"><b>SUPERMERCADO EXEMPLO LTDA</b><small>Demonstração · dados fictícios</small></div>
+  </aside>
+
+  <main class="conteudo">
+    <!-- INÍCIO -->
+    <section class="tela ativa" id="tela-inicio">
+      <span class="tag">Demonstração interativa</span>
+      <h1>Faça um fechamento <span class="prata">em 4 passos</span></h1>
+      <p class="lead">Os arquivos abaixo foram gerados agora, só para você, com dados fictícios. Baixe, importe e veja o
+        Hoth Finance trabalhar. Nada sai do seu navegador.</p>
+      <div class="arquivos">
+        <div class="arquivo" id="arqExtrato">
+          <div class="arq-icone">XLS</div>
+          <div><b>extrato_santander_outubro.csv</b><small id="infoExtrato">gerando…</small></div>
+          <button class="botao" data-baixar="extrato">Baixar</button>
+        </div>
+        <div class="arquivo" id="arqTitulos">
+          <div class="arq-icone">RET</div>
+          <div><b>contas_em_aberto.csv</b><small id="infoTitulos">gerando…</small></div>
+          <button class="botao" data-baixar="titulos">Baixar</button>
+        </div>
+      </div>
+      <div class="acoes">
+        <button class="botao primario" id="irImportar">Começar: importar extrato →</button>
+        <button class="botao" id="novosDados">↻ Gerar outros dados</button>
+      </div>
+      <div class="passos-mini">
+        <div><b>1</b>Importar o extrato</div><div><b>2</b>Revisar a classificação</div>
+        <div><b>3</b>Conciliar as contas a pagar</div><div><b>4</b>Ver DFC, DRE e fluxo</div>
+      </div>
+    </section>
+
+    <!-- IMPORTAR -->
+    <section class="tela" id="tela-importar">
+      <span class="tag">Passo 1 de 4</span>
+      <h1>Importar extrato</h1>
+      <p class="lead">Arraste o arquivo que você baixou, ou clique para escolher. Sem arquivo? Use o exemplo direto.</p>
+      <label class="soltar" id="soltar">
+        <input type="file" id="arquivoExtrato" accept=".csv,.txt" hidden>
+        <div class="soltar-icone">⇪</div>
+        <b>Solte o extrato aqui</b>
+        <small>extrato_santander_outubro.csv</small>
+        <div class="leitura" id="leitura"><i></i></div>
+      </label>
+      <div class="acoes"><button class="botao" id="usarExemplo">Usar o extrato de exemplo sem baixar</button></div>
+      <div class="log mono" id="logImport"></div>
+    </section>
+
+    <!-- CLASSIFICAR -->
+    <section class="tela" id="tela-classificar">
+      <div class="topo-tela">
+        <div><span class="tag">Passo 2 de 4</span><h1>Revise a classificação</h1>
+          <p class="lead">Verde: o app tem certeza. Amarelo: escolha a conta. Ao corrigir, ele aprende e aplica aos parecidos.</p></div>
+        <button class="botao primario" id="gravar" disabled>Gravar na planilha</button>
+      </div>
+      <div class="metricas">
+        <div class="metrica"><small>Lançamentos</small><b id="mTotal">0</b></div>
+        <div class="metrica ok"><small>Classificados sozinhos</small><b id="mAuto">0</b></div>
+        <div class="metrica al"><small>Para revisar</small><b id="mRevisar">0</b></div>
+        <div class="metrica"><small>Aprendidos agora</small><b id="mAprendidos">0</b></div>
+      </div>
+      <div class="filtros">
+        <button class="filtro ativo" data-filtro="revisar">Para revisar</button>
+        <button class="filtro" data-filtro="todos">Todos</button>
+      </div>
+      <div class="tabela-caixa"><table class="tabela" id="tabela">
+        <thead><tr><th>Data</th><th>Descrição</th><th class="num">Valor</th><th>Conta</th><th>Confiança</th></tr></thead>
+        <tbody></tbody></table></div>
+    </section>
+
+    <!-- CONTAS A PAGAR -->
+    <section class="tela" id="tela-pagar">
+      <div class="topo-tela">
+        <div><span class="tag">Passo 3 de 4</span><h1>Contas a Pagar</h1>
+          <p class="lead">Cada boleto em aberto é procurado no extrato que você gravou, da prova mais forte para a mais fraca.</p></div>
+        <div class="acoes-linha">
+          <label class="botao"><input type="file" id="arquivoTitulos" accept=".csv,.txt" hidden>Importar contas_em_aberto.csv</label>
+          <button class="botao primario" id="conciliar">Conciliar agora</button>
+        </div>
+      </div>
+      <div class="metricas" id="metricasPagar"></div>
+      <div class="tabela-caixa"><table class="tabela" id="tabelaPagar">
+        <thead><tr><th>Vencimento</th><th>Fornecedor</th><th class="num">Valor</th><th>Situação</th><th>Prova</th></tr></thead>
+        <tbody></tbody></table></div>
+      <div class="acoes"><button class="botao primario" id="verResultado" disabled>Ver o resultado do mês →</button></div>
+    </section>
+
+    <!-- RESULTADO -->
+    <section class="tela" id="tela-resultado">
+      <div class="topo-tela">
+        <div><span class="tag">Passo 4 de 4</span><h1>Resultado de outubro</h1>
+          <p class="lead">DRE e fluxo de caixa montados a partir do que você classificou. Mude uma conta no passo 2 e veja mudar aqui.</p></div>
+        <button class="botao" id="baixarPlanilha">Baixar lançamentos (.csv)</button>
+      </div>
+      <div class="metricas" id="kpis"></div>
+      <div class="grade-res">
+        <div class="painel"><h3>DRE resumida</h3><div id="dre"></div></div>
+        <div class="painel"><h3>Saldo dia a dia</h3><svg id="graficoSaldo" viewBox="0 0 600 260" preserveAspectRatio="none"></svg>
+          <div class="legenda"><span><i class="l1"></i>Realizado</span><span><i class="l2"></i>Projetado (títulos em aberto + vendas previstas)</span></div></div>
+      </div>
+      <div class="fim">
+        <h2>Pronto. Esse foi o fechamento de um mês.</h2>
+        <p>No app real, isso grava na planilha oficial com backup e auditoria, e o fluxo projetado se refaz sozinho.</p>
+        <div class="acoes centro"><a class="botao primario" href="https://github.com/hothhugo7/hoth-finance">Ver o código no GitHub</a>
+          <button class="botao" id="recomecar">Recomeçar com novos dados</button><a class="botao" href="index.html">Voltar à apresentação</a></div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="guia" id="guia">
+    <div class="guia-topo"><span class="ponto"></span>Guia</div>
+    <h4 id="guiaTitulo"></h4>
+    <p id="guiaTexto"></p>
+    <div class="guia-prog"><i id="guiaBarra"></i></div>
+    <ol id="guiaLista"></ol>
+  </aside>
+</div>
+<div class="toast" id="toast"></div>
+<script src="site/demo.js"></script>
+</body>
+</html>
