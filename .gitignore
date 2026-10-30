@@ -22,3 +22,5 @@ Pacote/
 frontend/node_modules/
 frontend/dist/
 hoth/web/static/
+.claude/
+Demo/BKP/

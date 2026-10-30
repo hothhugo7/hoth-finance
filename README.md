@@ -8,7 +8,17 @@ lançamento no plano de contas, confere as contas a pagar com os pagamentos e ma
 
 > Os nomes de empresa, fornecedores, pessoas e caminhos de rede deste repositório são fictícios.
 
+![Painel](docs/prints/painel.png)
+
 ---
+
+## Telas
+
+| Contas a pagar conciliadas | Fluxo de caixa |
+|---|---|
+| ![Contas a Pagar](docs/prints/pagar.png) | ![Fluxo de Caixa](docs/prints/fluxo.png) |
+| **Importar extrato** | **Categorias por fornecedor** |
+| ![Importar](docs/prints/importar.png) | ![Configurações](docs/prints/config.png) |
 
 ## O problema
 
@@ -74,6 +84,7 @@ Requisitos: Windows, Python 3.12, Node 20 e Excel (usado para a gravação via C
 python -m venv .venv
 .venv\Scripts\pip install -r requirements.txt
 cd frontend && npm install && npm run build && cd ..
+.venv\Scripts\python scripts\gerar_demo.py
 copy hoth.exemplo.json hoth.json
 "Abrir Hoth.bat"
 ```
@@ -83,6 +94,8 @@ Testes:
 ```bash
 .venv\Scripts\python -m pytest tests
 ```
+
+O `gerar_demo.py` cria em `Demo/` uma planilha com 1.512 lançamentos fictícios e um contas a pagar de exemplo.
 
 O guia completo de uso de cada tela está em [docs/GUIA-DE-USO.md](docs/GUIA-DE-USO.md).
 
