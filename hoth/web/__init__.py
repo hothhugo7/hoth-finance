@@ -1,0 +1,1 @@
+"""App local do Hoth."""

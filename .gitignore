@@ -1,0 +1,24 @@
+# Senhas e configuração local
+hoth.json
+
+# Dados reais da empresa
+Dados/
+Exemplos/
+*.xlsx
+*.xls
+*.xlsm
+*.pdf
+*.ofx
+*.fdb
+*.fbk
+*.zip
+
+# Gerados
+.venv/
+.pytest_cache/
+__pycache__/
+build/
+Pacote/
+frontend/node_modules/
+frontend/dist/
+hoth/web/static/

@@ -1,0 +1,8 @@
+{
+  "planilha": "Demo\\Fechamento Financeiro Exemplo 2026.xlsx",
+  "pasta_bkp": "Demo\\BKP",
+  "manter_backups": 60,
+  "pasta_comprovantes": "Demo\\Comprovantes",
+  "pasta_faturas": "Demo\\Faturas",
+  "senha_fatura": "<preencher>"
+}
