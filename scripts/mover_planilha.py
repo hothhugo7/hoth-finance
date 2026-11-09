@@ -1,6 +1,6 @@
 """Move a planilha oficial e as versões (BKP) para outra pasta e aponta o app para lá.
 
-    .venv\\Scripts\\python.exe scripts\\mover_planilha.py "\\\\192.168.0.110\\sistemas\\FECHAMENTO FINANCEIRO\\2026\\Hoth"
+    .venv\\Scripts\\python.exe scripts\\mover_planilha.py "\\\\servidor\financeiro\Hoth"
 
 1. Confere que a planilha está fechada.
 2. Copia a planilha para <destino> e as versões para <destino>\\BKP, conferindo o conteúdo (SHA-256) de cada arquivo.
