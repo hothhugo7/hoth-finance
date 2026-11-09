@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from hoth.conciliacao import conciliar  # noqa: E402
 from hoth.consulta import candidatos_malote  # noqa: E402
 from hoth.titulos import (ArquivoTitulos, Carteira, aplicar_importacao, comparar_importacao,  # noqa: E402
-                          ler_ret_abertos)
+                          conferir_titulos_do_malote, editar_malote, excluir_malote, ler_ret_abertos, novo_id_malote)
 
 CAB = ["Vencto", "Atraso", "Documento", "Par", "Duplicata", "Fornecedor", "Compra", "Loja", "A Pagar R$", "Cobrança",
        "Banco", "Cheque"]
@@ -146,3 +146,46 @@ def test_caixa_loja_sem_codigo_casa_pelo_nome_do_fornecedor():
     lancs.append({"id": "V", "banco": "Caixa Loja", "data": venc, "descricao": "vigilante de rua", "valor": -100.0})
     r = conciliar([titulo], lancs, hoje=dt.date(2026, 10, 27))["T1"]
     assert (r["situacao"], r["id_lancamento"]) == ("pago_provavel", "V")
+
+
+def _dois_malotes():
+    c = Carteira()
+    c.malotes = [{"id": "M20261102-1", "envio": D(2026, 11, 2), "total_fita": 100.0, "observacao": ""},
+                 {"id": "M20261104-1", "envio": D(2026, 11, 4), "total_fita": None, "observacao": ""}]
+    c.malote_valores = [{"malote": "M20261102-1", "ordem": 1, "valor": 100.0, "titulo": "T1", "observacao": ""},
+                        {"malote": "M20261104-1", "ordem": 1, "valor": 50.0, "titulo": "T2", "observacao": ""}]
+    return c
+
+
+def test_editar_malote_troca_data_id_e_valores():
+    c = _dois_malotes()
+    novo = editar_malote(c, "M20261102-1", D(2026, 11, 3), 130.0, "",
+                         [{"valor": 100.0, "titulo": "T1", "observacao": ""}, {"valor": 30.0, "titulo": "T3", "observacao": ""}])
+    assert novo == "M20261103-1" and c.malotes[0]["envio"] == D(2026, 11, 3) and c.malotes[0]["total_fita"] == 130.0
+    assert [(v["ordem"], v["titulo"]) for v in c.malote_valores if v["malote"] == novo] == [(1, "T1"), (2, "T3")]
+    assert not [v for v in c.malote_valores if v["malote"] == "M20261102-1"]
+    # mesma data: o ID não muda
+    assert editar_malote(c, novo, D(2026, 11, 3), None, "", [{"valor": 100.0, "titulo": "T1", "observacao": ""}]) == novo
+
+
+def test_editar_malote_recusa_erros_sem_mexer_nos_dados():
+    c = _dois_malotes()
+    with pytest.raises(ValueError, match="outro malote"):
+        editar_malote(c, "M20261102-1", D(2026, 11, 3), None, "", [{"valor": 50.0, "titulo": "T2", "observacao": ""}])
+    with pytest.raises(ValueError, match="sem valores"):
+        editar_malote(c, "M20261102-1", D(2026, 11, 3), None, "", [])
+    with pytest.raises(ValueError, match="não encontrado"):
+        editar_malote(c, "X", D(2026, 11, 3), None, "", [{"valor": 1.0, "titulo": "", "observacao": ""}])
+    assert c.malotes[0]["id"] == "M20261102-1" and len(c.malote_valores) == 2
+    conferir_titulos_do_malote(c, ["T1"], ignorar="M20261102-1")  # o próprio malote não conta como outro
+
+
+def test_excluir_malote_libera_titulos_e_nao_repete_id():
+    c = _dois_malotes()
+    c.malotes.append({"id": "M20261102-2", "envio": D(2026, 11, 2)})
+    excluir_malote(c, "M20261102-1")
+    assert [m["id"] for m in c.malotes] == ["M20261104-1", "M20261102-2"] and [v["titulo"] for v in c.malote_valores] == ["T2"]
+    conferir_titulos_do_malote(c, ["T1"])  # livre para outro malote
+    assert novo_id_malote(c, D(2026, 11, 2)) == "M20261102-1"
+    c.malotes.append({"id": "M20261102-1", "envio": D(2026, 11, 2)})
+    assert novo_id_malote(c, D(2026, 11, 2)) == "M20261102-3"

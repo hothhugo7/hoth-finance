@@ -338,13 +338,59 @@ def aplicar_importacao(carteira: Carteira, lido: dict, classificar=None, hoje: d
 # ------------------------------------------------------------------------------------------- malotes
 def novo_id_malote(carteira: Carteira, envio: dt.date) -> str:
     base = f"M{envio:%Y%m%d}"
-    n = sum(1 for m in carteira.malotes if str(m["id"]).startswith(base))
-    return f"{base}-{n + 1}"
+    usados = {str(m["id"]) for m in carteira.malotes}
+    n = 1
+    while f"{base}-{n}" in usados:   # malote excluído deixa buraco na numeração: contar repetiria um ID
+        n += 1
+    return f"{base}-{n}"
 
 
 def titulos_em_malote(carteira: Carteira) -> dict:
     """{id do título: id do malote}."""
     return {v["titulo"]: v["malote"] for v in carteira.malote_valores if v.get("titulo")}
+
+
+def conferir_titulos_do_malote(carteira: Carteira, titulos: list[str], ignorar: str = ""):
+    """Recusa título que já está em outro malote (`ignorar` = o próprio malote, na edição) ou repetido na fita."""
+    em_outro = {t: m for t, m in titulos_em_malote(carteira).items() if m != ignorar}
+    repetidos = [t for t in titulos if t and t in em_outro]
+    if repetidos:
+        raise ValueError(f"{len(repetidos)} título(s) já estão em outro malote ({em_outro[repetidos[0]]}).")
+    ids = [t for t in titulos if t]
+    if len(ids) != len(set(ids)):
+        raise ValueError("O mesmo título foi escolhido para dois valores.")
+
+
+def _malote(carteira: Carteira, mid: str) -> dict:
+    malote = next((m for m in carteira.malotes if m["id"] == mid), None)
+    if malote is None:
+        raise ValueError(f"Malote {mid} não encontrado. Atualize a tela.")
+    return malote
+
+
+def excluir_malote(carteira: Carteira, mid: str) -> dict:
+    """Tira o malote e os valores dele; os títulos voltam a ficar livres. Devolve o malote excluído."""
+    malote = _malote(carteira, mid)
+    carteira.malotes.remove(malote)
+    carteira.malote_valores = [v for v in carteira.malote_valores if v["malote"] != mid]
+    return malote
+
+
+def editar_malote(carteira: Carteira, mid: str, envio: dt.date, total_fita, observacao: str, valores: list[dict]) -> str:
+    """Troca os dados e os valores do malote. Se a data de envio mudar, o ID (que contém a data) muda junto.
+
+    `valores`: [{valor, titulo, observacao}] na ordem da fita. Devolve o ID final.
+    """
+    malote = _malote(carteira, mid)
+    if not valores:
+        raise ValueError("O malote ficaria sem valores. Para tirar o malote inteiro, use Excluir.")
+    conferir_titulos_do_malote(carteira, [v["titulo"] for v in valores], ignorar=mid)
+    novo = mid if malote["envio"] == envio else novo_id_malote(carteira, envio)
+    malote.update(id=novo, envio=envio, total_fita=total_fita, observacao=observacao)
+    carteira.malote_valores = [v for v in carteira.malote_valores if v["malote"] != mid]
+    carteira.malote_valores += [{"malote": novo, "ordem": i, "valor": round(v["valor"], 2), "titulo": v["titulo"],
+                                 "observacao": v.get("observacao", "")} for i, v in enumerate(valores, start=1)]
+    return novo
 
 
 # ------------------------------------------------------------------------------------------ categorias

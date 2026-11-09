@@ -165,7 +165,7 @@ export interface Malote {
   valor_pendente: number;
   dias: number | null;
   valores: { valor: number; titulo: string; observacao: string; fornecedor: string; vencimento: string | null;
-    situacao_texto: string; voltou: boolean; data_pagamento: string | null }[];
+    documento: string; parcela: string | number; situacao_texto: string; voltou: boolean; data_pagamento: string | null }[];
 }
 
 export interface FornecedorCategoria {
@@ -364,11 +364,15 @@ export const api = {
   cpImportar: (token: string) => req<{ detalhe: string; backup: string | null }>("/api/cp/importar", json({ token })),
   cpMarcar: (ids: string[], marca: string, observacao = "", lancamento = "") =>
     req<{ alterados: number }>("/api/cp/marcar", json({ ids, marca, observacao, lancamento })),
-  cpCandidatos: (valor: number, envio: string, escolhidos: string[]) =>
-    req<CandidatoMalote[]>("/api/cp/malote/candidatos", json({ valor, envio, escolhidos })),
+  cpCandidatos: (valor: number, envio: string, escolhidos: string[], malote = "") =>
+    req<CandidatoMalote[]>("/api/cp/malote/candidatos", json({ valor, envio, escolhidos, malote })),
   cpSalvarMalote: (envio: string, total_fita: number | null, observacao: string,
                    valores: { valor: number; titulo: string; observacao: string }[]) =>
     req<{ id: string; detalhe: string }>("/api/cp/malote", json({ envio, total_fita, observacao, valores })),
+  cpEditarMalote: (id: string, envio: string, total_fita: number | null, observacao: string,
+                   valores: { valor: number; titulo: string; observacao: string }[]) =>
+    req<{ id: string; detalhe: string }>("/api/cp/malote/editar", json({ id, envio, total_fita, observacao, valores, conferido: true })),
+  cpExcluirMalote: (id: string) => req<{ detalhe: string }>("/api/cp/malote/excluir", json({ id, conferido: true })),
   cpMalotes: () => req<Malote[]>("/api/cp/malotes"),
   cpCategorias: () => req<ListaCategorias>("/api/cp/categorias"),
   cpSalvarCategorias: (itens: { codigo: string; fornecedor: string; categoria: string }[], nova = "") =>

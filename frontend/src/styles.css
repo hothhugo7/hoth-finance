@@ -240,6 +240,12 @@ select.campo { padding-right: 26px; }
 .malote { padding: 0; margin-bottom: 8px; }
 .malote-cab { width: 100%; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; background: none; border: 0; color: inherit; font: inherit; padding: 12px 16px; cursor: pointer; text-align: left; }
 .malote-pendente { border-color: rgba(224, 176, 79, 0.45); }
+.malote-linha { display: flex; align-items: center; gap: 8px; padding-right: 12px; }
+.malote-linha .malote-cab { flex: 1; width: auto; }
+.malote-editando { border-color: var(--prata); }
+.malote-aviso-edicao { margin-bottom: 12px; }
+.lista-mudancas { margin: 0 0 12px; padding-left: 18px; line-height: 1.7; }
+.confirma-malote { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-weight: 600; cursor: pointer; }
 .resposta-consulta { font-size: 15px; border-left: 3px solid var(--prata); margin: 14px 0; }
 .tabela-consulta { max-height: 360px; }
 .botao.ativo { color: var(--texto); border-color: var(--prata); }

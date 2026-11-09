@@ -61,7 +61,7 @@ conferência e o fluxo saía desatualizado.
 - **Frontend**: React 18 + TypeScript, Vite
 - **Desktop**: pywebview (janela nativa) e PyInstaller (instalador)
 - **Planilhas e documentos**: openpyxl, xlrd, Excel COM (pywin32), pypdf, msoffcrypto-tool
-- **Testes**: pytest (44 testes)
+- **Testes**: pytest (47 testes)
 
 ## Arquitetura
 

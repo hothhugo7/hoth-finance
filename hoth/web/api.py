@@ -34,7 +34,8 @@ from ..gravacao import PlanilhaEmUso, PlanilhaOcupada, _substituir
 from ..importacao import (arquivo_regras_fixas, carregar_regras_fixas, importar_escolhas, previa, salvar_regra_fixa,
                           titulos_identificados)
 from ..titulos import (MARCAS, ArquivoTitulos, aplicar_importacao, cadastro_base, comparar_importacao,
-                       criar_categoria, definir_categorias, ler_ret_abertos, novo_id_malote, titulos_em_malote)
+                       conferir_titulos_do_malote, criar_categoria, definir_categorias, editar_malote, excluir_malote,
+                       ler_ret_abertos, novo_id_malote, titulos_em_malote)
 from ..plano import ErroPlano, Rascunho, editor_com_rascunho
 from ..planilha_atual import aplicar_renomeacoes, ler
 from ..texto import chave
@@ -522,13 +523,14 @@ class ValorMalote(BaseModel):
     valor: float
     envio: dt.date
     escolhidos: list[str] = []
+    malote: str = ""   # malote em edição: os títulos dele não contam como "em outro malote"
 
 
 @app.post("/api/cp/malote/candidatos")
 def cp_malote_candidatos(req: ValorMalote):
     carteira, resultado, *_ = _contas_pagar()
-    return candidatos_malote(req.valor, req.envio, carteira.titulos, resultado, set(req.escolhidos),
-                             titulos_em_malote(carteira))
+    em_outro = {t: m for t, m in titulos_em_malote(carteira).items() if m != req.malote}
+    return candidatos_malote(req.valor, req.envio, carteira.titulos, resultado, set(req.escolhidos), em_outro)
 
 
 class LinhaMalote(BaseModel):
@@ -553,13 +555,8 @@ def cp_malote_salvar(req: NovoMalote):
         carteira = _arquivo_titulos().ler()
         if not carteira.titulos:
             raise ValueError("Importe o relatório de contas em aberto do RET antes de registrar malotes.")
-        em_outro = titulos_em_malote(carteira)
-        repetidos = [v.titulo for v in req.valores if v.titulo and v.titulo in em_outro]
-        if repetidos:
-            raise ValueError(f"{len(repetidos)} título(s) já estão em outro malote ({em_outro[repetidos[0]]}).")
+        conferir_titulos_do_malote(carteira, [v.titulo for v in req.valores])
         ids = [v.titulo for v in req.valores if v.titulo]
-        if len(ids) != len(set(ids)):
-            raise ValueError("O mesmo título foi escolhido para dois valores.")
         mid = novo_id_malote(carteira, req.envio)
         carteira.malotes.append({"id": mid, "envio": req.envio, "total_fita": req.total_fita,
                                  "observacao": req.observacao, "criado_em": dt.datetime.now().replace(microsecond=0)})
@@ -571,6 +568,53 @@ def cp_malote_salvar(req: NovoMalote):
                    f"{len(ids)} com título")
         _gravar_carteira(carteira, "Malote", detalhe)
         return {"id": mid, "detalhe": detalhe}
+
+    return _gravando(fazer)
+
+
+class EdicaoMalote(NovoMalote):
+    id: str
+    conferido: bool = False
+
+
+@app.post("/api/cp/malote/editar")
+def cp_malote_editar(req: EdicaoMalote):
+    if not req.conferido:
+        raise HTTPException(400, "Confirme que conferiu as alterações do malote.")
+
+    def fazer():
+        carteira = _arquivo_titulos().ler()
+        envio_antes = next((m["envio"] for m in carteira.malotes if m["id"] == req.id), None)
+        qtd_antes = sum(1 for v in carteira.malote_valores if v["malote"] == req.id)
+        novo = editar_malote(carteira, req.id, req.envio, req.total_fita, req.observacao,
+                             [v.model_dump() for v in req.valores])
+        soma = round(sum(v.valor for v in req.valores), 2)
+        data_antes = f"{envio_antes:%d/%m/%Y}" if isinstance(envio_antes, dt.date) else "?"
+        detalhe = (f"Malote {req.id} editado: envio {data_antes} -> {req.envio:%d/%m/%Y}, "
+                   f"{qtd_antes} -> {len(req.valores)} valores, R$ {soma:.2f}" + (f", agora {novo}" if novo != req.id else ""))
+        _gravar_carteira(carteira, "Malote editado", detalhe)
+        return {"id": novo, "detalhe": detalhe}
+
+    return _gravando(fazer)
+
+
+class ExclusaoMalote(BaseModel):
+    id: str
+    conferido: bool = False
+
+
+@app.post("/api/cp/malote/excluir")
+def cp_malote_excluir(req: ExclusaoMalote):
+    if not req.conferido:
+        raise HTTPException(400, "Confirme que quer excluir o malote.")
+
+    def fazer():
+        carteira = _arquivo_titulos().ler()
+        qtd = sum(1 for v in carteira.malote_valores if v["malote"] == req.id)
+        malote = excluir_malote(carteira, req.id)
+        detalhe = f"Malote {req.id} de {malote['envio']:%d/%m/%Y} excluído: {qtd} valores"
+        _gravar_carteira(carteira, "Malote excluído", detalhe)
+        return {"detalhe": detalhe}
 
     return _gravando(fazer)
 
@@ -587,6 +631,7 @@ def cp_malotes():
             r = resultado.get(v.get("titulo"), {})
             valores.append({"valor": v["valor"], "titulo": v.get("titulo") or "", "observacao": v.get("observacao", ""),
                             "fornecedor": t["fornecedor"] if t else "", "vencimento": t["vencimento"] if t else None,
+                            "documento": t["documento"] if t else "", "parcela": t["parcela"] if t else "",
                             "situacao": r.get("situacao", ""), "situacao_texto": SITUACOES.get(r.get("situacao", ""), ""),
                             "voltou": r.get("situacao") in PAGOS, "data_pagamento": r.get("data_pagamento")})
         pend = [v for v in valores if not v["voltou"]]
