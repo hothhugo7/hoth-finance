@@ -3,7 +3,7 @@
     .venv\\Scripts\\python.exe scripts\\empacotar.py [--sem-testes] [--marcador "nome da etapa"]
 
 Passos: testes automáticos, build das telas (npm), executável (PyInstaller) e montagem da pasta
-"Pacote/Hoth Solutions" + ZIP datado. A planilha NÃO é copiada: o hoth.json do pacote aponta para a planilha
+"Pacote/Hoth Finance" + ZIP datado. A planilha NÃO é copiada: o hoth.json do pacote aponta para a planilha
 em uso e para a pasta BKP atuais, para continuar existindo uma planilha só.
 """
 import argparse
@@ -20,13 +20,14 @@ sys.path.insert(0, str(RAIZ))
 from hoth import config  # noqa: E402
 from hoth.importacao import arquivo_regras_fixas  # noqa: E402
 
-NOME = "Hoth Solutions"
+NOME = "Hoth Finance"
+NOME_ANTIGO = "Hoth Solutions"
 PY = RAIZ / ".venv" / "Scripts" / "python.exe"
 
-LEIA_ME = """HOTH SOLUTIONS — Fechamento Financeiro
+LEIA_ME = """HOTH FINANCE — Fechamento Financeiro
 =======================================
 
-Abrir: dois cliques em "Hoth Solutions.exe". Fechar a janela encerra o app.
+Abrir: dois cliques em "Hoth Finance.exe". Fechar a janela encerra o app.
 
 Precisa neste computador:
 - Microsoft Excel (desktop) — é ele que grava na planilha;
@@ -45,17 +46,17 @@ Ao instalar uma versão nova: substitua a pasta inteira, mas guarde o hoth.json 
 """
 
 
-LEIA_ME_INSTALADOR = """HOTH SOLUTIONS - Instalação
+LEIA_ME_INSTALADOR = """HOTH FINANCE - Instalação
 ===========================
 
 1. Extraia este ZIP inteiro numa pasta.
 2. Dê dois cliques em Instalar.bat.
-   - Instala o programa em %LOCALAPPDATA%\\Programs\\Hoth Solutions (não precisa de administrador).
+   - Instala o programa em %LOCALAPPDATA%\\Programs\\Hoth Finance (não precisa de administrador).
    - Instala o Microsoft Edge WebView2 se faltar (precisa de internet).
    - Avisa se o Microsoft Excel não estiver instalado (ele é necessário para gravar na planilha).
    - Pergunta qual planilha usar: a oficial da rede (padrão) ou a que vem na pasta Planilha deste ZIP.
    - Cria atalhos na Área de Trabalho e no Menu Iniciar.
-3. Abra pelo atalho "Hoth Solutions".
+3. Abra pelo atalho "Hoth Finance".
 
 Reinstalar/atualizar: rode Instalar.bat de novo (mantém a configuração e os dados).
 Desinstalar: Desinstalar.bat (não apaga a planilha nem as versões).
@@ -89,12 +90,13 @@ def main():
 
     pacote = RAIZ / "Pacote" / NOME
     dados_antigos = None
-    if (pacote / "Dados").exists():  # preserva Dados e hoth.json de um pacote anterior
+    anterior = pacote if (pacote / "Dados").exists() else RAIZ / "Pacote" / NOME_ANTIGO  # o app já se chamou Hoth Solutions
+    if (anterior / "Dados").exists():  # preserva Dados e hoth.json de um pacote anterior
         dados_antigos = RAIZ / "Pacote" / "_dados_anteriores"
         shutil.rmtree(dados_antigos, ignore_errors=True)
-        shutil.copytree(pacote / "Dados", dados_antigos / "Dados")
-        if (pacote / "hoth.json").exists():
-            shutil.copy2(pacote / "hoth.json", dados_antigos / "hoth.json")
+        shutil.copytree(anterior / "Dados", dados_antigos / "Dados")
+        if (anterior / "hoth.json").exists():
+            shutil.copy2(anterior / "hoth.json", dados_antigos / "hoth.json")
     shutil.rmtree(pacote, ignore_errors=True)
     shutil.copytree(trabalho / "dist" / NOME, pacote)
     (pacote / "Dados").mkdir(exist_ok=True)
@@ -116,7 +118,7 @@ def main():
     base = RAIZ.parent / "Dados" / "classificacoes.sqlite3"   # categorias aprovadas na versão Base do fluxo
     if base.exists():
         shutil.copy2(base, pacote / "cadastro_base.sqlite3")
-    versao = f"Hoth Solutions - versão de {dt.datetime.now():%d/%m/%Y %H:%M}\n"
+    versao = f"Hoth Finance - versão de {dt.datetime.now():%d/%m/%Y %H:%M}\n"
     if a.marcador:
         versao += f"Marcador: {a.marcador}\n"
     (pacote / "VERSAO.txt").write_text(versao, encoding="utf-8")

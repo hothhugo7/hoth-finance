@@ -88,7 +88,7 @@ def _uso(cont) -> Counter:
     return uso
 
 
-app = FastAPI(title="Hoth Solutions")
+app = FastAPI(title="Hoth Finance")
 
 
 @app.middleware("http")
@@ -201,17 +201,17 @@ def abrir_planilha(req: Abrir):
 
 @app.get("/api/caixa/ultimo")
 def caixa_ultimo():
-    """Últimos lançamentos da Caixa Loja que vieram do CONTROLE DE CAIXA (sem os boletos do RET, "00025 - ..."),
-    para saber de onde colar."""
-    do_controle = [l for l in _conteudo().lancamentos if l["banco"] == colagem.BANCO and l.get("data")
+    """A última linha do CONTROLE DE CAIXA que está na Hoth (sem os boletos do RET, "00025 - ..."): no CONTROLE,
+    cola-se tudo o que vem abaixo dela. No mesmo dia vale a ordem da planilha, que é a ordem em que foi colado."""
+    do_controle = [(i, l) for i, l in enumerate(_conteudo().lancamentos) if l["banco"] == colagem.BANCO and l.get("data")
                    and not re.match(r"^\d{3,6} - ", str(l["descricao"]))]
     if not do_controle:
         return {"ultima_data": None, "linhas": [], "ultima_colagem": None}
-    ultimos = sorted(do_controle, key=lambda l: (l["data"], str(l.get("importado_em") or "")), reverse=True)[:6]
-    colados = [l for l in do_controle if str(l.get("origem") or "").startswith("Colagem")]
-    quando = max((l["importado_em"] for l in colados if l.get("importado_em")), default=None)
-    return {"ultima_data": ultimos[0]["data"], "ultima_colagem": quando,
-            "linhas": [{k: l[k] for k in ("data", "descricao", "valor", "conta")} for l in ultimos]}
+    _, ultima = max(do_controle, key=lambda il: (il[1]["data"], il[0]))
+    quando = max((l["importado_em"] for _, l in do_controle
+                  if str(l.get("origem") or "").startswith("Colagem") and l.get("importado_em")), default=None)
+    return {"ultima_data": ultima["data"], "ultima_colagem": quando,
+            "linhas": [{k: ultima[k] for k in ("data", "descricao", "valor", "conta")}]}
 
 
 class Colado(BaseModel):

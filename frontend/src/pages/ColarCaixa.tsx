@@ -142,9 +142,8 @@ export function ColarCaixa({ contas, aoGravar }: { contas: string[]; aoGravar: (
       {!linhas && !ocupado && ultimo?.ultima_data && (
         <div className="cartao cartao-ultimo">
           <div className="acoes-linha">
-            <strong>Último lançamento do CONTROLE na Hoth: {dataBR(ultimo.ultima_data)}</strong>
+            <strong>Última linha do CONTROLE que já está na Hoth</strong>
             {ultimo.ultima_colagem && <span className="nota">última colagem em {dataBR(ultimo.ultima_colagem)}</span>}
-            <button className="link" onClick={() => mudarDesde(ultimo.ultima_data!)}>usar esta data em "A partir de"</button>
           </div>
           <table className="tabela tabela-ultimos">
             <tbody>
@@ -154,6 +153,7 @@ export function ColarCaixa({ contas, aoGravar }: { contas: string[]; aoGravar: (
               ))}
             </tbody>
           </table>
+          <p className="nota">Ache esta linha no CONTROLE DE CAIXA e copie todas as que estão abaixo dela.</p>
         </div>
       )}
 

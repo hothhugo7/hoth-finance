@@ -166,7 +166,7 @@ def gerar_planilha(caminho, *, calculo: dict, movs: list[dict], entradas: list[d
     ws = wb.active
     ws.title = "Painel"
     ws["A1"], ws["A1"].font = "Fluxo de Caixa Projetado", Font(size=16, bold=True)
-    ws["A2"] = (f"{empresa} · Hoth Solutions · de {calculo['de']:%d/%m/%Y} a {calculo['ate']:%d/%m/%Y} · "
+    ws["A2"] = (f"{empresa} · Hoth Finance · de {calculo['de']:%d/%m/%Y} a {calculo['ate']:%d/%m/%Y} · "
                 f"gerado em {gerado_em:%d/%m/%Y %H:%M} pelo app (não digite aqui)")
     ws["A2"].font = Font(size=9, color="6B6F76")
     ws["A3"] = "Saldo = variação acumulada a partir de zero (saldos dos bancos ainda não conferidos)."

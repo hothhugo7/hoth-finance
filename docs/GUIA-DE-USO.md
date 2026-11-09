@@ -1,11 +1,11 @@
-# Hoth Solutions — Fechamento Financeiro
+# Hoth Finance — Fechamento Financeiro
 
 Planilha única de fechamento (DFC + DRE) alimentada por uma tabela só de lançamentos,
 com plano de contas e grupos editáveis. Primeiro cliente: Supermercado Exemplo Ltda (2026).
 
 ## Abrir o app
 
-Pacote: **`Pacote\Hoth Solutions\Hoth Solutions.exe`** (janela própria; veja o `LEIA-ME.txt` da pasta).
+Pacote: **`Pacote\Hoth Finance\Hoth Finance.exe`** (janela própria; veja o `LEIA-ME.txt` da pasta).
 A partir do código: **`Abrir Hoth.bat`**. Funciona só neste computador (127.0.0.1). Telas:
 
 - **Painel**: lançamentos, quantos estão sem classificação, última importação, versões guardadas.
@@ -43,7 +43,7 @@ Toda gravação exige a planilha fechada no Excel e guarda a versão anterior no
 | `Relatorios/` | Relatórios das fases, situação da planilha, conferência da migração e piloto |
 | `hoth/` | Código: leitura da planilha antiga, geração da planilha nova, conferência, leitores, classificação, gravação; `hoth/web/` = app |
 | `scripts/` | `migrar_2026.py` (gera e confere), `importar.py` (prévia, gravação, backups e restauração), `avaliar_fase3.py` (mede a classificação), `atualizar_visual.py` (refaz o visual sem perder dados), `gerar_logos.py` (logos e ícone), `empacotar.py` (gera o pacote), `conferir_piloto.py` (piloto) e `copiar_caixa_loja.py` (obsoleto: use a tela Colar Caixa Loja) |
-| `Pacote/` | App empacotado (`Hoth Solutions`) e ZIP datado |
+| `Pacote/` | App empacotado (`Hoth Finance`) e ZIP datado |
 | `frontend/` | Telas do app (React + TypeScript). `npm run build` gera `hoth/web/static` |
 | `Dados/` | Extratos enviados pelo app (cópia do original) e rascunho do plano de contas |
 | `tests/` | Testes automáticos (`.venv\Scripts\python.exe -m pytest tests`) |

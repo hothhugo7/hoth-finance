@@ -65,7 +65,7 @@ def _carteira(*linhas, hoje=D(2026, 10, 14)):
 
 
 def test_conciliacao_regras():
-    c = _carteira(linha("10/10/2026", "111", "00025 - ACUCAREIRA", 573.32),        # lotérica com documento
+    c = _carteira(linha("10/10/2026", "111", "00025 - DISTRIBUIDORA", 573.32),        # lotérica com documento
                   linha("10/10/2026", "222", "00089 - HOLAMBRA", 162.16),           # lotérica pelo valor
                   linha("10/10/2026", "333", "00008 - BRF S.A", 2453.27),           # comprovante (nome curto)
                   linha("10/10/2026", "444", "00500 - FULANO", 777.77),             # só valor -> provável

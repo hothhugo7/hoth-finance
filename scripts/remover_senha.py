@@ -47,7 +47,7 @@ def main():
         _substituir(tmp, pl.caminho)
 
     arquivos = ([Path(os.environ["HOTH_CONFIG"])] if os.environ.get("HOTH_CONFIG")
-                else [RAIZ / "hoth.json", RAIZ / "Pacote" / "Hoth Solutions" / "hoth.json"])
+                else [RAIZ / "hoth.json", RAIZ / "Pacote" / "Hoth Finance" / "hoth.json"])
     for a in arquivos:
         if a.exists():
             d = json.loads(a.read_text(encoding="utf-8"))

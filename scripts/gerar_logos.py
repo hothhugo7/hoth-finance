@@ -46,13 +46,26 @@ def main():
     horizontal.paste(texto, (marca.width + espaco, (altura - texto.height) // 2), texto)
     horizontal.save(PASTA / "logo_hoth_horizontal.png")
 
-    # Ícone do programa: a marca (H) sobre um quadrado grafite arredondado.
+    # Ícone do Hoth Finance: a marca (H) sobre um quadrado grafite arredondado, com a linha de gráfico da bolsa subindo em seta no canto
+    # (é o que o diferencia do ícone do app de promoções). Desenhado em 4x para as bordas saírem lisas.
     from PIL import ImageDraw
-    lado = 256
-    icone = Image.new("RGBA", (lado, lado), (0, 0, 0, 0))
-    ImageDraw.Draw(icone).rounded_rectangle((0, 0, lado - 1, lado - 1), radius=48, fill=(18, 19, 22, 255))
-    m = marca.resize((int(marca.width * 190 / marca.height), 190), Image.LANCZOS)
-    icone.alpha_composite(m, ((lado - m.width) // 2, (lado - m.height) // 2))
+    lado, escala, fundo_icone = 256, 4, (18, 19, 22, 255)
+    grande = lado * escala
+    icone = Image.new("RGBA", (grande, grande), (0, 0, 0, 0))
+    ImageDraw.Draw(icone).rounded_rectangle((0, 0, grande - 1, grande - 1), radius=48 * escala, fill=fundo_icone)
+    altura_h = 176 * escala
+    m = marca.resize((int(marca.width * altura_h / marca.height), altura_h), Image.LANCZOS)
+    icone.alpha_composite(m, ((grande - m.width) // 2 - 16 * escala, (grande - m.height) // 2 - 14 * escala))
+    d = ImageDraw.Draw(icone)
+    d.rounded_rectangle((112 * escala, 142 * escala, 248 * escala, 248 * escala), radius=24 * escala, fill=fundo_icone)
+    verde, espessura = (95, 191, 138, 255), 15
+    pontos = [(124, 226), (158, 190), (182, 212), (226, 162)]
+    d.line([(x * escala, y * escala) for x, y in pontos], fill=verde, width=espessura * escala, joint="curve")
+    for x, y in pontos:
+        d.ellipse([(x - espessura / 2) * escala, (y - espessura / 2) * escala,
+                   (x + espessura / 2) * escala, (y + espessura / 2) * escala], fill=verde)
+    d.polygon([(240 * escala, 146 * escala), (204 * escala, 152 * escala), (234 * escala, 184 * escala)], fill=verde)
+    icone = icone.resize((lado, lado), Image.LANCZOS)
     icone.save(PASTA / "hoth.ico", sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
     print(logo.size, horizontal.size)
 

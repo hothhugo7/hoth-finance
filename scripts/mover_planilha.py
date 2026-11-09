@@ -1,6 +1,6 @@
 """Move a planilha oficial e as versões (BKP) para outra pasta e aponta o app para lá.
 
-    .venv\Scripts\python.exe scripts\mover_planilha.py "\\servidor\financeiro\Hoth"
+    .venv\\Scripts\\python.exe scripts\\mover_planilha.py "\\\\192.168.0.110\\sistemas\\FECHAMENTO FINANCEIRO\\2026\\Hoth"
 
 1. Confere que a planilha está fechada.
 2. Copia a planilha para <destino> e as versões para <destino>\\BKP, conferindo o conteúdo (SHA-256) de cada arquivo.
@@ -77,7 +77,7 @@ def main():
     print("Gravação no destino: OK")
 
     arquivos = ([Path(os.environ["HOTH_CONFIG"])] if os.environ.get("HOTH_CONFIG")
-                else [RAIZ / "hoth.json", RAIZ / "Pacote" / "Hoth Solutions" / "hoth.json"])
+                else [RAIZ / "hoth.json", RAIZ / "Pacote" / "Hoth Finance" / "hoth.json"])
     for arquivo in arquivos:
         if arquivo.parent.exists():
             atual = json.loads(arquivo.read_text(encoding="utf-8")) if arquivo.exists() else {}

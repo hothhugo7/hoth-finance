@@ -1,1 +1,1 @@
-"""Hoth Solutions — planilha única de fechamento financeiro."""
+"""Hoth Finance — planilha única de fechamento financeiro."""

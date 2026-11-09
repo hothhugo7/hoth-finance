@@ -71,7 +71,7 @@ def main():
                 def tela_cheia(self):
                     janela.toggle_fullscreen()
 
-            janela = webview.create_window("Hoth Solutions", url, width=1440, height=900, min_size=(1100, 700),
+            janela = webview.create_window("Hoth Finance", url, width=1440, height=900, min_size=(1100, 700),
                                            background_color="#0C0D0F", js_api=Janela())
             webview.start()
             servidor.should_exit = True

@@ -1,13 +1,13 @@
-﻿# Instalador do Hoth Solutions (não precisa de administrador).
-# Instala em %LOCALAPPDATA%\Programs\Hoth Solutions, verifica as dependências e cria os atalhos.
+﻿# Instalador do Hoth Finance (não precisa de administrador).
+# Instala em %LOCALAPPDATA%\Programs\Hoth Finance, verifica as dependências e cria os atalhos.
 $ErrorActionPreference = 'Stop'
 $origem = Split-Path -Parent $MyInvocation.MyCommand.Path
-$destino = Join-Path $env:LOCALAPPDATA 'Programs\Hoth Solutions'
+$destino = Join-Path $env:LOCALAPPDATA 'Programs\Hoth Finance'
 $redePadrao = '\\servidor\financeiro\FECHAMENTO FINANCEIRO\2026\Hoth\Hoth - Fechamento Financeiro Exemplo 2026.xlsx'
 
 function Titulo($t) { Write-Host ''; Write-Host "== $t" -ForegroundColor Cyan }
 
-Write-Host 'HOTH SOLUTIONS - Instalação' -ForegroundColor White
+Write-Host 'HOTH FINANCE - Instalação' -ForegroundColor White
 Titulo 'Verificando o computador'
 
 # 1. Excel desktop (obrigatório: é ele que grava na planilha)
@@ -37,9 +37,21 @@ else {
 
 # 3. Copia o programa (preserva hoth.json e Dados de uma instalação anterior)
 Titulo "Instalando em $destino"
-$app = Join-Path $origem 'Hoth Solutions'
-Get-Process 'Hoth Solutions' -ErrorAction SilentlyContinue | Stop-Process -Force
+$app = Join-Path $origem 'Hoth Finance'
+Get-Process 'Hoth Finance' -ErrorAction SilentlyContinue | Stop-Process -Force
 New-Item -ItemType Directory -Force $destino | Out-Null
+# O app já se chamou Hoth Solutions: traz a configuração e os dados e tira os atalhos antigos.
+# A pasta antiga fica onde está (pode guardar arquivos de outro app, como "Promocoes OS").
+Get-Process 'Hoth Solutions' -ErrorAction SilentlyContinue | Stop-Process -Force
+$pastaAntiga = Join-Path $env:LOCALAPPDATA 'Programs\Hoth Solutions'
+if ((Test-Path (Join-Path $pastaAntiga 'hoth.json')) -and -not (Test-Path (Join-Path $destino 'hoth.json'))) {
+    Copy-Item (Join-Path $pastaAntiga 'hoth.json') $destino
+    if (Test-Path (Join-Path $pastaAntiga 'Dados')) { Copy-Item (Join-Path $pastaAntiga 'Dados') $destino -Recurse -Force }
+    Write-Host '[ok] Configuração e dados trazidos da versão Hoth Solutions' -ForegroundColor Green
+}
+foreach ($pasta in @([Environment]::GetFolderPath('Desktop'), [Environment]::GetFolderPath('Programs'))) {
+    Remove-Item (Join-Path $pasta 'Hoth Solutions.lnk') -ErrorAction SilentlyContinue
+}
 $configAntiga = Join-Path $destino 'hoth.json'
 $tinhaConfig = Test-Path $configAntiga
 robocopy $app $destino /E /NFL /NDL /NJH /NJS /NP /XF hoth.json /XD Dados | Out-Null
@@ -77,13 +89,13 @@ if ($tinhaConfig) {
 }
 
 # 5. Atalhos
-$exe = Join-Path $destino 'Hoth Solutions.exe'
+$exe = Join-Path $destino 'Hoth Finance.exe'
 $ws = New-Object -ComObject WScript.Shell
-foreach ($lnk in @((Join-Path ([Environment]::GetFolderPath('Desktop')) 'Hoth Solutions.lnk'),
-                   (Join-Path ([Environment]::GetFolderPath('Programs')) 'Hoth Solutions.lnk'))) {
+foreach ($lnk in @((Join-Path ([Environment]::GetFolderPath('Desktop')) 'Hoth Finance.lnk'),
+                   (Join-Path ([Environment]::GetFolderPath('Programs')) 'Hoth Finance.lnk'))) {
     $s = $ws.CreateShortcut($lnk); $s.TargetPath = $exe; $s.WorkingDirectory = $destino; $s.IconLocation = $exe; $s.Save()
 }
 Write-Host '[ok] Atalhos criados na Área de Trabalho e no Menu Iniciar' -ForegroundColor Green
 
 Titulo 'Pronto'
-Write-Host 'Abra pelo atalho "Hoth Solutions". Para desinstalar: Desinstalar.bat (a planilha não é apagada).'
+Write-Host 'Abra pelo atalho "Hoth Finance". Para desinstalar: Desinstalar.bat (a planilha não é apagada).'
